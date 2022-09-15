@@ -13,6 +13,7 @@ class _FormsAndValidationState extends State<FormsAndValidation> {
   String? email;
   final emailFocusNode = FocusNode();
   bool hidePassword = true;
+  final ageControlller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -117,7 +118,32 @@ class _FormsAndValidationState extends State<FormsAndValidation> {
                     print('Clicked: $value');
                     email = value;
                   },
-                )
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.number,
+                  controller: ageControlller,
+                  decoration: const InputDecoration(
+                    labelText: 'Age',
+                    hintText: 'Enter Your Age',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Age is required';
+                    }
+                    if ((int.tryParse(value) ?? 0) < 18) {
+                      return 'You must be greater than 18 years';
+                    }
+                  },
+                  onChanged: (value) {
+                    print('Clicked: $value');
+                    email = value;
+                  },
+                ),
               ],
             ),
           ),
