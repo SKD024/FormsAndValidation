@@ -12,7 +12,7 @@ class _FormsAndValidationState extends State<FormsAndValidation> {
   final emailController = TextEditingController();
   String? email;
   final emailFocusNode = FocusNode();
-
+  bool hidePassword = true;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -32,6 +32,7 @@ class _FormsAndValidationState extends State<FormsAndValidation> {
             child: Column(
               children: [
                 TextField(
+                  textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     labelText: 'Full Name',
                     hintText: 'Enter your full name',
@@ -45,16 +46,16 @@ class _FormsAndValidationState extends State<FormsAndValidation> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(color: Colors.red),
+                      borderSide: const BorderSide(color: Colors.red),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(color: Colors.green),
+                      borderSide: const BorderSide(color: Colors.green),
                     ),
                     // enabled: false,
                     disabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(color: Colors.red),
+                      borderSide: const BorderSide(color: Colors.red),
                     ),
                     suffixIconColor: Colors.green,
                   ),
@@ -63,6 +64,8 @@ class _FormsAndValidationState extends State<FormsAndValidation> {
                   height: 20,
                 ),
                 TextFormField(
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.emailAddress,
                   controller: emailController,
                   focusNode: emailFocusNode,
                   decoration: const InputDecoration(
@@ -83,6 +86,38 @@ class _FormsAndValidationState extends State<FormsAndValidation> {
                     email = value;
                   },
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        hidePassword = !hidePassword;
+                        setState(() {});
+                      },
+                      child: Icon(hidePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                    ),
+                    labelText: 'Password',
+                    hintText: 'Enter Your Password',
+                    border: const OutlineInputBorder(),
+                  ),
+                  obscureText: hidePassword,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Password is required';
+                    }
+                    if (value.length < 6) {
+                      return 'Password length must be 6';
+                    }
+                  },
+                  onChanged: (value) {
+                    print('Clicked: $value');
+                    email = value;
+                  },
+                )
               ],
             ),
           ),
@@ -90,9 +125,7 @@ class _FormsAndValidationState extends State<FormsAndValidation> {
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             formKey.currentState?.save();
-
             final isValidated = formKey.currentState?.validate();
-
             print('email from on changed: $email');
             if (isValidated ?? false) {
               final ec = emailController.text;
